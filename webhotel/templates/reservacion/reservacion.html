@@ -1,0 +1,64 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+
+{% block title %} Reservaciones {% endblock %}
+
+{% block background %}{% static 'mie/img/reservacion.jpg' %}{% endblock %}
+
+{% block headers %}
+<h1>Reservaciones</h1>
+{% endblock %}
+
+{% block content %}
+<div class="member-section">
+    <div id="alert-message" style="display: none;"></div>
+
+    <form method="post" id="miembro-form">
+        {% csrf_token %}
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="Clientes">Cliente:</label>
+                <select id="Clientes" name="Clientes" class="form-control" required>
+                    <option value="" disabled selected>Selecciona un Cliente</option>
+                    {% for eve in Clientes %}
+                        <option value="{{ eve.id }}">{{ eve.nombre }} {{ eve.apellido }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+          </div>    
+
+        <div class="form-group-container">
+            <div class="select-group" >
+                <label for="Habitaciones">Habitacion:</label>
+                <select id="Habitaciones" name="Habitaciones" class="form-control" required>
+                    <option value="" disabled selected>Selecciona una Habitacion</option>
+                    {% for g in Habitaciones %}
+                        <option value="{{ g.id }}">{{ g.nohabitacion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>   
+
+
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="fechareservacion">Fecha:</label>
+                <input type="date" id="fechareservacion" name="fechareservacion" class="form-control" required>
+            </div>
+            
+           
+        </div>
+
+    
+       
+
+        <div class="button-group">
+            <button style= "cursor: pointer;" type="submit" class="btn btn-primary agregar-button">Agregar</button>
+            <a href="{% url 'reservaciones:lista_reservacion' %}" class="btn btn-primary listar-button">Listar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

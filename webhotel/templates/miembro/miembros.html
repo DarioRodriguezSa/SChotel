@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+
+{% block title %} Clientes {% endblock %}
+
+{% block background %}{% static 'mie/img/cliente.jpg' %}{% endblock %}
+
+{% block headers %}
+<h1>Clientes</h1>
+{% endblock %}
+
+{% block content %}
+<div class="member-section">
+    <div id="alert-message" style="display: none;"></div>
+
+    <form method="post" id="miembro-form">
+        {% csrf_token %}
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="nombre">Nombres:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required value="{{ nombre }}">
+            </div>
+            <div class="form-group">
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" class="form-control" required value="{{ apellidos }}">
+            </div>
+        </div>
+
+        <div class="form-group-container">
+            <div class="select-group" style="margin-right: auto; ">
+                <label for="genero">Género:</label>
+                <select id="genero" name="genero" class="form-control" required>
+                    <option value="" disabled selected>Selecciona un género</option>
+                    {% for g in generos %}
+                        <option value="{{ g.id }}">{{ g.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+           
+        </div>
+
+        <div class="form-group-container">
+
+            <div class="form-group">
+                <label for="id">DPi:</label>
+                <input type="text" id="di" name="di" class="form-control" required value="{{ di }}">
+            </div>
+        </div>
+
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="number" id="telefono" name="telefono" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button style= "cursor: pointer;" type="submit" class="btn btn-primary agregar-button">Agregar</button>
+            <a href="{% url 'clientes:lista_cliente' %}" class="btn btn-primary listar-button">Listar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

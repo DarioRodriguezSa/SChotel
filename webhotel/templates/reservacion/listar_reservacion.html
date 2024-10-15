@@ -1,0 +1,121 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/listar_miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+
+{% block title %}Reservaciones{% endblock %}
+
+{% block background %}{% static 'mie/img/reservacion.jpg' %}{% endblock %}
+
+{% block headers %}<h1>Lista de Reservaciones</h1>{% endblock %}
+
+{% block content %}
+
+<div class="row ml-0 mb-3">
+    <a href="{% url 'reservaciones:agregar_reservacion' %}">
+        <button  style= "cursor: pointer;" type="button" class="btn btn-info font-weight-bold">
+            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            AGREGAR RESERVACION
+        </button>
+    </a>
+</div>
+<div style="background-color: rgba(0, 0, 0, 0.1); color: #757070; padding: 10px; margin: 10px 0;">
+    Total de Registros: {{ reservaciones|length }}
+</div> 
+<div class="content-container">
+    <form method="get" action="{% url 'reservaciones:lista_reservacion' %}">
+        <div class="search-bar">
+            <input type="text" name="q" class="form-control" placeholder="Buscar" value="{{ query }}" id="search-input">
+        </div>
+    </form>
+    <div id="custom-table" class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Habitacion</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservacion in reservaciones %}
+                    <tr>
+                        <td>{{ reservacion.clientereservacion.nombre }}</td>
+                        <td>{{ reservacion.habitacionreservacion.nohabitacion }}</td>
+                        <td>{{ reservacion.fechareservacion }}</td>
+                            <td class="acciones">
+                                <div>
+                                        <!-- Si no hay fecha de salida, muestra el botón para cerrar -->
+                                        <form method="POST" action="{% url 'reservaciones:reservacion_actuali' reservacion.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" style="cursor: pointer;" class="btn btn-success" title="Cerrar registro">
+                                                CERRAR
+                                            </button>
+                                        </form>
+                                 
+                                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCliente{{ reservacion.id }}">
+                                   ELIMINAR
+                                </a>
+                            </div>
+                            <div class="modal fade" id="eliminarCliente{{ reservacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ reservacion.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">  
+                                            <h5 class="modal-title" id="exampleModalLabel{{ cliente.id }}">Eliminar Reservacion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Está seguro que desea eliminar a: {{ reservacion.clientereservacion.nombre }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button style="cursor: pointer;" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <a id="updateThisURL" rel="delete" href="{% url 'reservaciones:eliminar_reservacion' reservacion.id %}" class="btn btn-danger text-decoration-none">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+{% block javascripts %}
+<script src="{% static 'tables/js/jquery-3.7.0.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const tableRows = document.querySelectorAll('.custom-table tbody tr');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.toLowerCase();
+
+        tableRows.forEach(function (row) {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+
+            cells.forEach(function (cell) {
+                const cellText = cell.innerText.toLowerCase();
+                if (cellText.includes(query)) {
+                    found = true;
+                }
+            });
+
+            if (found) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock javascripts %}

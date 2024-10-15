@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+
+{% block title %} Habitaciones {% endblock %}
+
+{% block background %}{% static 'mie/img/habitacion.jpg' %}{% endblock %}
+
+{% block headers %}
+<h1>Habitaciones</h1>
+{% endblock %}
+
+{% block content %}
+<div class="member-section">
+    <div id="alert-message" style="display: none;"></div>
+
+    <form method="post" id="miembro-form">
+        {% csrf_token %}
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="nohabitacion">No Habitacion:</label>
+                <input type="text" id="nohabitacion" name="nohabitacion" class="form-control" required value="{{ nohabitacion }}">
+            </div>
+        </div>
+
+        <div class="form-group-container">
+            <div class="select-group" style="margin-right: auto; ">
+                <label for="categoria">categoria:</label>
+                <select id="categoria" name="categoria" class="form-control" required>
+                    <option value="" disabled selected>Selecciona una Categoria</option>
+                    {% for c in categorias %}
+                        <option value="{{ c.id }}">{{ c.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        <div class="select-group" style="margin-right: auto; ">
+                <label for="estado">estado:</label>
+                <select id="estado" name="estado" class="form-control" required>
+                    <option value="" disabled selected>Selecciona un Estado</option>
+                    {% for e in estados %}
+                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+           
+        </div>
+
+        <div class="button-group">
+            <button style= "cursor: pointer;" type="submit" class="btn btn-primary agregar-button">Agregar</button>
+            <a href="{% url 'habitaciones:lista_habitacion' %}" class="btn btn-primary listar-button">Listar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

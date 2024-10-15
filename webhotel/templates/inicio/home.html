@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/listar_miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+{% block title %} Inicio {% endblock %}
+{% block background %}{% static 'inicio/img/inicio2.jpg' %}{% endblock %}
+{% block headers %}<h1>Inicio</h1>{% endblock %}
+{% block content %}
+
+<div class="content-container">
+    <h2>Lista de Habitaciones En Uso</h2> 
+    {% if habitaciones %}
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Número de Habitación</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for habitacion in habitaciones %}
+                    <tr>
+                        <td>{{ habitacion.nohabitacion }}</td>
+                        <td>{{ habitacion.categoria.nombre }}</td>
+                        <td style="background-color: #ec5252;">{{ habitacion.estado.nombre }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay habitaciones en uso.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

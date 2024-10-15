@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+{% block title %} Actualizar Miembro {% endblock %}
+{% block background %}{% static 'mie/img/cliente.jpg' %}{% endblock %}
+
+{% block headers %}
+<h1>Actualizar Miembro</h1>
+{% endblock %}
+
+{% block content %}
+<div class="member-section">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="nombre">Nombres:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required value="{{ cliente.nombre }}">
+            </div>
+            <div class="form-group">
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" class="form-control" required value="{{ cliente.apellido }}">
+            </div>
+        </div>
+
+        <div class="form-group-container">
+            <div class="select-group" style="margin-right: auto;">
+                <label for="genero">Género:</label>
+                <select id="genero" name="genero" class="form-control" required>
+                    <option value="" disabled selected>Selecciona un género</option>
+                    {% for g in generos %}
+                        <option value="{{ g.id }}" {% if g.id == cliente.genero.id %}selected{% endif %}>
+                            {{ g.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+
+        <div class="form-group-container">
+            <div class="form-group">
+            <label for="dpi">DPI:</label>
+            <input type="text" id="dpi" name="dpi" class="form-control" required value="{{ cliente.dpi }}">
+            </div>
+        </div>
+
+        <div class="form-group-container">
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="number" id="telefono" name="telefono" class="form-control" required value="{{ cliente.telefono }}">
+            </div>
+        </div>
+
+
+        <div class="button-group">
+            <button style= "cursor: pointer;"  type="submit" class="btn btn-primary agregar-button">ACTUALIZAR</button>
+            <a href="{% url 'clientes:lista_cliente' %}" class="btn btn-primary listar-button">Listar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

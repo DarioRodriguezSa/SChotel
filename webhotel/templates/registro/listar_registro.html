@@ -1,0 +1,130 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'mie/css/listar_miembros.css' %}" rel="stylesheet" type="text/css">
+{% endblock stylesheets %}
+
+{% block title %}Registros{% endblock %}
+
+{% block background %}{% static 'mie/img/registro.jpg' %}{% endblock %}
+
+{% block headers %}<h1>Lista de Registros</h1>{% endblock %}
+
+{% block content %}
+
+<div class="row ml-0 mb-3">
+    <a href="{% url 'registro:agregar_registro' %}">
+        <button  style= "cursor: pointer;" type="button" class="btn btn-info font-weight-bold">
+            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            AGREGAR REGISTRO
+        </button>
+    </a>
+</div>
+<div style="background-color: rgba(0, 0, 0, 0.1); color: #757070; padding: 10px; margin: 10px 0;">
+    Total de Registros: {{ registros|length }}
+</div> 
+<div class="content-container">
+    <form method="get" action="{% url 'registro:lista_registro' %}">
+        <div class="search-bar">
+            <input type="text" name="q" class="form-control" placeholder="Buscar" value="{{ query }}" id="search-input">
+        </div>
+    </form>
+    <div id="custom-table" class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Habitacion</th>
+                    <th>Estrada</th>
+                    <th>Salida</th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.clienteregistro.nombre }}</td>
+                        <td>{{ registro.habitacionregistro.nohabitacion }}</td>
+                        <td>{{ registro.entrada }}</td>
+                        <td>{{ registro.salida }}</td>
+                            <td class="acciones">
+                                <div>
+                                    {% if registro.salida %}
+                                        <!-- Si ya hay una fecha de salida, se muestra un mensaje o se desactiva el botón -->
+                                        <button class="btn btn-success" disabled title="Registro cerrado">
+                                            CERRAR
+                                        </button>
+                                    {% else %}
+                                        <!-- Si no hay fecha de salida, muestra el botón para cerrar -->
+                                        <form method="POST" action="{% url 'registro:registro_actuali' registro.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" style="cursor: pointer;" class="btn btn-success" title="Cerrar registro">
+                                                CERRAR
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCliente{{ registro.id }}">
+                                   ELIMINAR
+                                </a>
+                            </div>
+                            <div class="modal fade" id="eliminarCliente{{ registro.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ registro.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">  
+                                            <h5 class="modal-title" id="exampleModalLabel{{ cliente.id }}">Eliminar Registro</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Está seguro que desea eliminar a: {{ registro.clienteregistro.nombre }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button style="cursor: pointer;" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <a id="updateThisURL" rel="delete" href="{% url 'registro:eliminar_registro' registro.id %}" class="btn btn-danger text-decoration-none">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+{% block javascripts %}
+<script src="{% static 'tables/js/jquery-3.7.0.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const tableRows = document.querySelectorAll('.custom-table tbody tr');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.toLowerCase();
+
+        tableRows.forEach(function (row) {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+
+            cells.forEach(function (cell) {
+                const cellText = cell.innerText.toLowerCase();
+                if (cellText.includes(query)) {
+                    found = true;
+                }
+            });
+
+            if (found) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock javascripts %}
